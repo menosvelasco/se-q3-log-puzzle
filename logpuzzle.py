@@ -26,8 +26,24 @@ def read_urls(filename):
     extracting the hostname from the filename itself, sorting
     alphabetically in increasing order, and screening out duplicates.
     """
-    # +++your code here+++
-    pass
+    # (r'_(\S*)\W', filename)
+    host_name = filename.split('_')
+    host_name = host_name[1]
+    with open(filename, 'r') as f:
+
+        print(f)
+        em_list = []
+        for value in f:
+            get_space = re.search(r'GET (\S*)', value)
+            group_get = get_space.group(1)
+
+            if group_get:
+                if 'puzzle' in group_get:
+                    url_list = f'http://{host_name}{group_get}'
+                    print(url_list)
+                    em_list.append(url_list)
+
+        return sorted(list(set(em_list)), key=lambda url_w: url_w[-8:-4])
 
 
 def download_images(img_urls, dest_dir):
@@ -38,9 +54,25 @@ def download_images(img_urls, dest_dir):
     to show each local image file.
     Creates the directory if necessary.
     """
-    # +++your code here+++
-    pass
+    if not os.path.isdir(dest_dir):
+        os.makedirs(dest_dir)
+    with open('index.html', 'w') as f:
+        f.write('<html><body>')
 
+        image_count = 0
+        for i in img_urls:
+            print(i)
+            image = f'img{str(image_count)}.jpg'
+
+            file_name = os.path.join(dest_dir, image)
+            urllib.request.urlretrieve(i, file_name)
+            print('retrieve')
+            f.write(f'<img src="{file_name}"/>')
+            image_count += 1
+        f.write('</body></html>')
+
+
+# http: // code.google.com/edu/languages/google-python-class/images/puzzle/a-baaa.jpg
 
 def create_parser():
     """Creates an argument parser object."""
